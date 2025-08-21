@@ -34,11 +34,23 @@ public class UserService {
         return userRepository.save(user);
     }
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+
+         return userRepository.findAll();
     }
-     private void validateUser(User user) {
+
+    private void validateUser(User user) {
         if (!StringUtils.hasText(user.getEmail())) {
             throw new IllegalArgumentException("Email nie może być pusty");
+        }
+        User existing = userRepository.findByEmail(user.getEmail());
+        if (existing != null && (user.getId() == null || !existing.getId().equals(user.getId()))) {
+            throw new IllegalArgumentException("User o takim email już istnieje");
+        }
+        if (!StringUtils.hasText(user.getFirstName())) {
+            throw new IllegalArgumentException("FirstName nie może być pusty");
+        }
+        if (!StringUtils.hasText(user.getLastName())) {
+            throw new IllegalArgumentException("LastName nie może być pusty");
         }
      }
 }
